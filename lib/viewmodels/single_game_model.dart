@@ -1,17 +1,22 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kelime_oyunu/locators.dart';
+import 'package:kelime_oyunu/models/word.dart';
 import 'package:kelime_oyunu/repository/repository.dart';
 
-enum ViewStatees { geliyor, geldi, hata }
+enum ViewState { geliyor, geldi, hata }
 
 class SingleViewModel with ChangeNotifier {
   final Repository _repository = locator<Repository>();
-  ViewStatees _state = ViewStatees.geliyor;
-  ViewStatees get state => _state;
-  List aciklar = [4];
+  ViewState _state = ViewState.geliyor;
+  ViewState get state => _state;
+  List aciklar = [];
   Map<int, String> tahmin = {};
+  List<Word> kelimeler = [];
+  int sira = 0;
+  String soru = "";
   Map<int, String> ipucu = {
     0: "w",
     1: "o",
@@ -22,11 +27,10 @@ class SingleViewModel with ChangeNotifier {
     6: "a",
     7: "r",
     8: "s",
-    9: "s",
   };
-  
+
   Color renk = Colors.black;
-  set state(ViewStatees value) {
+  set state(ViewState value) {
     _state = value;
     notifyListeners();
   }
@@ -42,7 +46,7 @@ class SingleViewModel with ChangeNotifier {
     return randomNumber;
   }
 
-  void kontrol() {
+  kontrol() async {
     bool areEqual = true;
     List<MapEntry<int, String>> sortedEntries = tahmin.entries.toList()
       ..sort((a, b) => a.value.compareTo(b.value));
@@ -62,14 +66,62 @@ class SingleViewModel with ChangeNotifier {
 
     if (areEqual) {
       renk = Colors.green;
+      sifirla();
+      await Future.delayed(const Duration(seconds: 1));
+      siradakiKelimeyiParcala();
     } else {
       renk = Colors.red;
+      sifirla();
     }
+
     notifyListeners();
   }
 
   void renkSifirla() {
     renk = Colors.black;
+    notifyListeners();
+  }
+
+  void sifirla() async {
+    await Future.delayed(const Duration(seconds: 1));
+    tahmin.clear();
+    renk = Colors.black;
+
+    notifyListeners();
+  }
+
+  singleKelimeGetir() async {
+    state = ViewState.geliyor;
+    kelimeler = await _repository.singleKelimeGetir();
+    siradakiKelimeyiParcala();
+  }
+
+  siradakiKelimeyiParcala() {
+    state = ViewState.geliyor;
+    ipucu.clear();
+    aciklar.clear();
+    tahmin.clear();
+    List bolum = kelimeler[sira].icerik.split("");
+    for (int i = 0; i < bolum.length; i++) {
+      ipucu.addAll({i: bolum[i]});
+    }
+    print(ipucu);
+    soru = kelimeler[sira].sorusu;
+    print(soru);
+
+    for (int i = 0; i < bolum.length; i++) {
+      if (bolum[i].contains(' ')) {
+        aciklar.add(i);
+      }
+    }
+    print(aciklar);
+    if (sira < kelimeler.length - 1) {
+      sira++;
+    } else {
+      print("sa");
+    }
+
+    state = ViewState.geldi;
     notifyListeners();
   }
 }

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:kelime_oyunu/pages/single_game_page.dart';
+import 'package:kelime_oyunu/viewmodels/single_game_model.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    SingleViewModel _singleModel =
+        Provider.of<SingleViewModel>(context, listen: true);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
@@ -53,7 +58,13 @@ class HomePage extends StatelessWidget {
                     height: 40,
                   ),
                   MaterialButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _singleModel.singleKelimeGetir();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SingleGamePage()));
+                    },
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 10),
                       alignment: Alignment.center,

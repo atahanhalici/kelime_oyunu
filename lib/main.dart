@@ -6,7 +6,7 @@ import 'package:kelime_oyunu/viewmodels/single_game_model.dart';
 import 'package:provider/provider.dart';
 
 void main() {
- setupLocator();
+  setupLocator();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => SingleViewModel()),
   ], child: const MyApp()));
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const SingleGamePage(),
+      home: const HomePage(),
     );
   }
 }
