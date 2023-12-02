@@ -17,6 +17,7 @@ class SingleViewModel with ChangeNotifier {
   List<Word> kelimeler = [];
   int sira = 0;
   String soru = "";
+  bool kontrolSurec = false;
   Map<int, String> ipucu = {
     0: "w",
     1: "o",
@@ -48,6 +49,8 @@ class SingleViewModel with ChangeNotifier {
   }
 
   kontrol() async {
+    kontrolSurec = true;
+    notifyListeners();
     bool areEqual = true;
     List<MapEntry<int, String>> sortedEntries = tahmin.entries.toList()
       ..sort((a, b) => a.key.compareTo(b.key));
@@ -79,7 +82,7 @@ class SingleViewModel with ChangeNotifier {
       renk = Colors.red;
       sifirla();
     }
-
+    kontrolSurec = false;
     notifyListeners();
   }
 

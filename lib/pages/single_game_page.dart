@@ -276,12 +276,17 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                         const SizedBox(
                                           height: 20,
                                         ),
-                                        Text(
-                                          _singleModel.soru,
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontFamily: "Outfit",
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 5),
+                                          child: Text(
+                                            _singleModel.soru,
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20,
+                                              fontFamily: "Outfit",
+                                            ),
+                                            textAlign: TextAlign.center,
                                           ),
                                         ),
                                         const SizedBox(
@@ -464,23 +469,29 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                     ),
                                     TextButton(
                                         onPressed: () {
-                                          int sayi = _singleModel.randomSayi(
-                                              _singleModel.ipucu,
-                                              _singleModel.aciklar);
-                                          _singleModel.aciklar.add(sayi);
-                                          if (_singleModel.tahmin.length +
-                                                  _singleModel.aciklar.length ==
-                                              _singleModel.ipucu.length) {
-                                            for (int i = 0;
-                                                i < _singleModel.aciklar.length;
-                                                i++) {
-                                              _singleModel.tahmin[
-                                                      _singleModel.aciklar[i]] =
-                                                  _singleModel.ipucu.values
-                                                          .toList()[
-                                                      _singleModel.aciklar[i]];
+                                          print(_singleModel.kontrolSurec);
+                                          if (!_singleModel.kontrolSurec) {
+                                            int sayi = _singleModel.randomSayi(
+                                                _singleModel.ipucu,
+                                                _singleModel.aciklar);
+                                            _singleModel.aciklar.add(sayi);
+                                            if (_singleModel.tahmin.length +
+                                                    _singleModel
+                                                        .aciklar.length ==
+                                                _singleModel.ipucu.length) {
+                                              for (int i = 0;
+                                                  i <
+                                                      _singleModel
+                                                          .aciklar.length;
+                                                  i++) {
+                                                _singleModel.tahmin[_singleModel
+                                                    .aciklar[i]] = _singleModel
+                                                        .ipucu.values
+                                                        .toList()[
+                                                    _singleModel.aciklar[i]];
+                                              }
+                                              _singleModel.kontrol();
                                             }
-                                            _singleModel.kontrol();
                                           }
                                         },
                                         child: Container(
@@ -504,7 +515,7 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    MaterialButton(
+                                    /*  MaterialButton(
                                       onPressed: () {},
                                       child: Container(
                                         margin: const EdgeInsets.symmetric(
@@ -525,7 +536,7 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                           ),
                                         ),
                                       ),
-                                    ),
+                                    ),*/
                                     const Expanded(
                                       child: SizedBox(
                                         height: 40,
