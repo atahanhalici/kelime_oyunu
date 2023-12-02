@@ -28,7 +28,7 @@ class SingleViewModel with ChangeNotifier {
     7: "r",
     8: "s",
   };
-
+  bool bitti = false;
   Color renk = Colors.black;
   set state(ViewState value) {
     _state = value;
@@ -41,7 +41,8 @@ class SingleViewModel with ChangeNotifier {
 
     do {
       randomNumber = random.nextInt(ipucu.length);
-    } while (aciklar.contains(randomNumber));
+    } while (aciklar.contains(randomNumber) ||
+        tahmin.keys.toList().contains(randomNumber));
     notifyListeners();
     return randomNumber;
   }
@@ -49,9 +50,12 @@ class SingleViewModel with ChangeNotifier {
   kontrol() async {
     bool areEqual = true;
     List<MapEntry<int, String>> sortedEntries = tahmin.entries.toList()
-      ..sort((a, b) => a.value.compareTo(b.value));
+      ..sort((a, b) => a.key.compareTo(b.key));
+
     List<MapEntry<int, String>> sortedEntries2 = ipucu.entries.toList()
-      ..sort((a, b) => a.value.compareTo(b.value));
+      ..sort((a, b) => a.key.compareTo(b.key));
+    print(sortedEntries);
+    print(sortedEntries2);
     if (sortedEntries.length == sortedEntries2.length) {
       for (int i = 0; i < sortedEntries.length; i++) {
         if (sortedEntries[i].key != sortedEntries2[i].key ||
@@ -60,6 +64,8 @@ class SingleViewModel with ChangeNotifier {
           break;
         }
       }
+      print(sortedEntries);
+      print(sortedEntries2);
     } else {
       areEqual = false;
     }
@@ -97,28 +103,32 @@ class SingleViewModel with ChangeNotifier {
   }
 
   siradakiKelimeyiParcala() {
-    state = ViewState.geliyor;
-    ipucu.clear();
-    aciklar.clear();
-    tahmin.clear();
-    List bolum = kelimeler[sira].icerik.split("");
-    for (int i = 0; i < bolum.length; i++) {
-      ipucu.addAll({i: bolum[i]});
-    }
-    print(ipucu);
-    soru = kelimeler[sira].sorusu;
-    print(soru);
-
-    for (int i = 0; i < bolum.length; i++) {
-      if (bolum[i].contains(' ')) {
-        aciklar.add(i);
-      }
-    }
-    print(aciklar);
-    if (sira < kelimeler.length - 1) {
-      sira++;
+    if (sira == kelimeler.length) {
+      bitti = true;
     } else {
-      print("sa");
+      state = ViewState.geliyor;
+      ipucu.clear();
+      aciklar.clear();
+      tahmin.clear();
+      String kelime = kelimeler[sira].icerik.toLowerCase();
+      List bolum = kelime.split("");
+      for (int i = 0; i < bolum.length; i++) {
+        ipucu.addAll({i: bolum[i]});
+      }
+      print(ipucu);
+      soru = kelimeler[sira].sorusu;
+      print(soru);
+
+      for (int i = 0; i < bolum.length; i++) {
+        if (bolum[i].contains(' ')) {
+          aciklar.add(i);
+        }
+      }
+      print(aciklar);
+      if (sira < kelimeler.length) {
+        print("heyo");
+        sira++;
+      }
     }
 
     state = ViewState.geldi;

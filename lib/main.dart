@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kelime_oyunu/locators.dart';
 import 'package:kelime_oyunu/pages/home_page.dart';
-import 'package:kelime_oyunu/pages/single_game_page.dart';
 import 'package:kelime_oyunu/viewmodels/single_game_model.dart';
 import 'package:provider/provider.dart';
 

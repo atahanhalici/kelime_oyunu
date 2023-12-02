@@ -73,110 +73,117 @@ class _SingleGamePageState extends State<SingleGamePage> {
                   ),
                   _singleModel.state == ViewState.geldi
                       ? _singleModel.kelimeler[0].id != ""
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Row(
+                          ? _singleModel.bitti == false
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const SizedBox(
-                                      width: 20,
+                                    Row(
+                                      children: [
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        Text(
+                                          "Toplam Puan\n$toplamPuan",
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                            fontFamily: "Outfit",
+                                          ),
+                                        ),
+                                        const Expanded(child: SizedBox()),
+                                        Container(
+                                          decoration: const BoxDecoration(
+                                              color: Color.fromARGB(
+                                                  255, 238, 238, 238),
+                                              borderRadius: BorderRadius.only(
+                                                  bottomLeft:
+                                                      Radius.circular(20),
+                                                  bottomRight:
+                                                      Radius.circular(20))),
+                                          child: Image.asset(
+                                            "assets/logo_black.png",
+                                            width: 150,
+                                          ),
+                                        ),
+                                        const Expanded(child: SizedBox()),
+                                        Text(
+                                          "Soru Puanı\n$sPuan",
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                            fontFamily: "Outfit",
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      "Toplam Puan\n$toplamPuan",
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontFamily: "Outfit",
-                                      ),
-                                    ),
-                                    const Expanded(child: SizedBox()),
-                                    Container(
-                                      decoration: const BoxDecoration(
-                                          color: Color.fromARGB(
-                                              255, 238, 238, 238),
-                                          borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(20),
-                                              bottomRight:
-                                                  Radius.circular(20))),
-                                      child: Image.asset(
-                                        "assets/logo_black.png",
-                                        width: 150,
-                                      ),
-                                    ),
-                                    const Expanded(child: SizedBox()),
-                                    Text(
-                                      "Soru Puanı\n$sPuan",
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontFamily: "Outfit",
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                  ],
-                                ),
-                                Opacity(
-                                  opacity: 0,
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.text,
-                                    controller: _controller,
-                                    autofocus: true,
-                                    focusNode: focusNode,
-                                    onChanged: (value) {
-                                      if (_singleModel.tahmin.length +
-                                              _singleModel.aciklar.length !=
-                                          _singleModel.ipucu.length) {
-                                        _singleModel.renkSifirla();
-                                      }
-                                      var yeniCumle = value.split("");
+                                    Opacity(
+                                      opacity: 0,
+                                      child: TextFormField(
+                                        keyboardType: TextInputType.text,
+                                        controller: _controller,
+                                        autofocus: true,
+                                        focusNode: focusNode,
+                                        onChanged: (value) {
+                                          if (_singleModel.tahmin.length +
+                                                  _singleModel.aciklar.length !=
+                                              _singleModel.ipucu.length) {
+                                            _singleModel.renkSifirla();
+                                          }
+                                          var yeniCumle = value.split("");
 
-                                      if (_controller.text != "") {
-                                        for (int i = 0;
-                                            i < _singleModel.aciklar.length;
-                                            i++) {
-                                          _singleModel.tahmin[
-                                                  _singleModel.aciklar[i]] =
-                                              _singleModel.ipucu.values
-                                                      .toList()[
-                                                  _singleModel.aciklar[i]];
-                                        }
-                                        for (int i = -1;
-                                            i < _singleModel.ipucu.length - 1;
-                                            i++) {
-                                          if (_singleModel.tahmin
-                                              .containsKey(i + 1)) {
+                                          if (_controller.text != "") {
+                                            for (int i = 0;
+                                                i < _singleModel.aciklar.length;
+                                                i++) {
+                                              _singleModel.tahmin[
+                                                      _singleModel.aciklar[i]] =
+                                                  _singleModel.ipucu.values
+                                                          .toList()[
+                                                      _singleModel.aciklar[i]];
+                                            }
+                                            for (int i = -1;
+                                                i <
+                                                    _singleModel.ipucu.length -
+                                                        1;
+                                                i++) {
+                                              if (_singleModel.tahmin
+                                                  .containsKey(i + 1)) {
+                                              } else {
+                                                if (yeniCumle[0] == "a") {
+                                                  _singleModel.tahmin[i + 1] =
+                                                      yeniCumle[1];
+                                                } else {
+                                                  _singleModel.tahmin[i + 1] =
+                                                      yeniCumle[0];
+                                                }
+
+                                                break;
+                                              }
+                                            }
                                           } else {
-                                            if (yeniCumle[0] == "a") {
-                                              _singleModel.tahmin[i + 1] =
-                                                  yeniCumle[1];
-                                            } else {
-                                              _singleModel.tahmin[i + 1] =
-                                                  yeniCumle[0];
+                                            _singleModel.aciklar
+                                                .forEach((index) {
+                                              _singleModel.tahmin.remove(index);
+                                            });
+                                            int? maxKey;
+
+                                            if (_singleModel
+                                                .tahmin.isNotEmpty) {
+                                              maxKey = _singleModel.tahmin.keys
+                                                  .reduce(
+                                                      (a, b) => a > b ? a : b);
                                             }
 
-                                            break;
-                                          }
-                                        }
-                                      } else {
-                                        _singleModel.aciklar.forEach((index) {
-                                          _singleModel.tahmin.remove(index);
-                                        });
-                                        int? maxKey;
+                                            _singleModel.tahmin.remove(maxKey);
 
-                                        if (_singleModel.tahmin.isNotEmpty) {
-                                          maxKey = _singleModel.tahmin.keys
-                                              .reduce((a, b) => a > b ? a : b);
-                                        }
-
-                                        _singleModel.tahmin.remove(maxKey);
-
-                                        /* _singleModel.tahmin
+                                            /* _singleModel.tahmin
                                   .remove(_singleModel.tahmin.length - 1);*/
-                                        /* if (!_singleModel.aciklar
+                                            /* if (!_singleModel.aciklar
                                   .contains(_singleModel.tahmin.length - 1)) {
                                 print("sa");
                                 print(sayac);
@@ -195,7 +202,7 @@ class _SingleGamePageState extends State<SingleGamePage> {
                               }
                               print(_singleModel.tahmin);
                               print(_singleModel.aciklar);*/
-                                        /* for (int i = _singleModel.tahmin.length - 1;
+                                            /* for (int i = _singleModel.tahmin.length - 1;
                                   i >= 0;
                                   i--) {
                                 print(i);
@@ -208,7 +215,7 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                   continue;
                                 }
                               }*/
-                                        /* for (int i = _singleModel.tahmin.length;
+                                            /* for (int i = _singleModel.tahmin.length;
                                   i >= 0;
                                   i--) {
                                 if (_singleModel.aciklar.contains(i)) {
@@ -233,53 +240,54 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                   break;
                                 }
                               }*/
-                                      }
-                                      if (value == "a") {
-                                        // Metin boş ise focus'u geri al
-                                        setState(() {});
-                                        focusNode.unfocus();
-                                        focusNode.requestFocus();
-                                      }
+                                          }
+                                          if (value == "a") {
+                                            // Metin boş ise focus'u geri al
+                                            setState(() {});
+                                            focusNode.unfocus();
+                                            focusNode.requestFocus();
+                                          }
 
-                                      _controller.text = "a";
-                                      setState(() {
-                                        focusNode.unfocus();
-                                        focusNode.requestFocus();
-                                      });
+                                          _controller.text = "a";
+                                          setState(() {
+                                            focusNode.unfocus();
+                                            focusNode.requestFocus();
+                                          });
 
-                                      if (_singleModel.tahmin.length ==
-                                          _singleModel.ipucu.length) {
-                                        _singleModel.kontrol();
-                                      }
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 30,
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                          255, 238, 238, 238),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: Column(children: [
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Text(
-                                      _singleModel.soru,
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                        fontFamily: "Outfit",
+                                          if (_singleModel.tahmin.length ==
+                                              _singleModel.ipucu.length) {
+                                            _singleModel.kontrol();
+                                          }
+                                        },
                                       ),
                                     ),
                                     const SizedBox(
                                       height: 30,
                                     ),
-                                    /*Padding(
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      decoration: BoxDecoration(
+                                          color: const Color.fromARGB(
+                                              255, 238, 238, 238),
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: Column(children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Text(
+                                          _singleModel.soru,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: "Outfit",
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 30,
+                                        ),
+                                        /*Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Center(
                               child: GridView.builder(
@@ -349,163 +357,267 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                   }),
                             ),
                           ),*/
-                                    GestureDetector(
-                                      onTap: () {
-                                        focusNode.requestFocus();
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Container(
-                                          color: Colors.transparent,
-                                          width: size.width,
-                                          height: 50,
-                                          child: Center(
-                                            child: ListView.separated(
-                                              itemCount:
-                                                  _singleModel.ipucu.length,
-                                              scrollDirection: Axis.horizontal,
-                                              shrinkWrap: true,
-                                              physics:
-                                                  const NeverScrollableScrollPhysics(),
-                                              itemBuilder: (context, index) {
-                                                return SizedBox(
-                                                  width: (size.width - 150) /
-                                                      (_singleModel
-                                                          .ipucu.length),
-                                                  child: Opacity(
-                                                    opacity: _singleModel
-                                                                .ipucu.values
-                                                                .toList()[index]
-                                                                .contains(
-                                                                    " ") ==
-                                                            true
-                                                        ? 0
-                                                        : 1,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text(
-                                                          _singleModel.aciklar
-                                                                      .contains(
-                                                                          index) !=
-                                                                  false
-                                                              ? _singleModel
-                                                                  .ipucu[index]
-                                                                  .toString()
-                                                                  .toUpperCase()
-                                                              : _singleModel.tahmin[
-                                                                          index] !=
-                                                                      null
+                                        GestureDetector(
+                                          onTap: () {
+                                            focusNode.requestFocus();
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Container(
+                                              color: Colors.transparent,
+                                              width: size.width,
+                                              height: 50,
+                                              child: Center(
+                                                child: ListView.separated(
+                                                  itemCount:
+                                                      _singleModel.ipucu.length,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  shrinkWrap: true,
+                                                  physics:
+                                                      const NeverScrollableScrollPhysics(),
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return SizedBox(
+                                                      width:
+                                                          (size.width - 150) /
+                                                              (_singleModel
+                                                                  .ipucu
+                                                                  .length),
+                                                      child: Opacity(
+                                                        opacity: _singleModel
+                                                                    .ipucu
+                                                                    .values
+                                                                    .toList()[
+                                                                        index]
+                                                                    .contains(
+                                                                        " ") ==
+                                                                true
+                                                            ? 0
+                                                            : 1,
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Text(
+                                                              _singleModel.aciklar
+                                                                          .contains(
+                                                                              index) !=
+                                                                      false
                                                                   ? _singleModel
-                                                                      .tahmin[
+                                                                      .ipucu[
                                                                           index]
                                                                       .toString()
                                                                       .toUpperCase()
-                                                                  : " ",
-                                                          style: TextStyle(
-                                                              fontFamily:
-                                                                  "Outfit",
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                                  : _singleModel.tahmin[
+                                                                              index] !=
+                                                                          null
+                                                                      ? _singleModel
+                                                                          .tahmin[
+                                                                              index]
+                                                                          .toString()
+                                                                          .toUpperCase()
+                                                                      : " ",
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      "Outfit",
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color:
+                                                                      _singleModel
+                                                                          .renk,
+                                                                  fontSize: 25),
+                                                            ),
+                                                            Container(
+                                                              height: 5,
+                                                              width: 25,
                                                               color:
                                                                   _singleModel
                                                                       .renk,
-                                                              fontSize: 25),
+                                                            )
+                                                          ],
                                                         ),
-                                                        Container(
-                                                          height: 5,
-                                                          width: 25,
-                                                          color:
-                                                              _singleModel.renk,
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              separatorBuilder:
-                                                  (context, index) {
-                                                return const SizedBox(
-                                                  width: 10,
-                                                );
-                                              },
+                                                      ),
+                                                    );
+                                                  },
+                                                  separatorBuilder:
+                                                      (context, index) {
+                                                    return const SizedBox(
+                                                      width: 10,
+                                                    );
+                                                  },
+                                                ),
+                                              ),
                                             ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 30,
+                                        ),
+                                      ]),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    TextButton(
+                                        onPressed: () {
+                                          int sayi = _singleModel.randomSayi(
+                                              _singleModel.ipucu,
+                                              _singleModel.aciklar);
+                                          _singleModel.aciklar.add(sayi);
+                                          if (_singleModel.tahmin.length +
+                                                  _singleModel.aciklar.length ==
+                                              _singleModel.ipucu.length) {
+                                            for (int i = 0;
+                                                i < _singleModel.aciklar.length;
+                                                i++) {
+                                              _singleModel.tahmin[
+                                                      _singleModel.aciklar[i]] =
+                                                  _singleModel.ipucu.values
+                                                          .toList()[
+                                                      _singleModel.aciklar[i]];
+                                            }
+                                            _singleModel.kontrol();
+                                          }
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: const Color.fromARGB(
+                                                255, 204, 204, 204),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 7, horizontal: 30),
+                                          child: const Text(
+                                            "Harf Al",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                              fontFamily: "Outfit",
+                                            ),
+                                          ),
+                                        )),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    MaterialButton(
+                                      onPressed: () {},
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        alignment: Alignment.center,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          color: Colors.pink,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: const Text(
+                                          "Tahmin Et",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontFamily: "Outfit",
                                           ),
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(
-                                      height: 30,
-                                    ),
-                                  ]),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                TextButton(
-                                    onPressed: () {
-                                      int sayi = _singleModel.randomSayi(
-                                          _singleModel.ipucu,
-                                          _singleModel.aciklar);
-                                      _singleModel.aciklar.add(sayi);
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color:
-                                            Color.fromARGB(255, 204, 204, 204),
-                                        borderRadius: BorderRadius.circular(10),
+                                    const Expanded(
+                                      child: SizedBox(
+                                        height: 40,
                                       ),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 7, horizontal: 30),
-                                      child: const Text(
-                                        "Harf Al",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                          fontFamily: "Outfit",
+                                    ),
+                                  ],
+                                )
+                              : Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Image.asset("assets/logo.png"),
+                                        const SizedBox(
+                                          height: 20,
                                         ),
-                                      ),
-                                    )),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                MaterialButton(
-                                  onPressed: () {},
-                                  child: Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    alignment: Alignment.center,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      color: Colors.pink,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: const Text(
-                                      "Tahmin Et",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontFamily: "Outfit",
-                                      ),
+                                        const Text(
+                                          "Tebrikler Tüm Bilmecelerimizi Çözdünüz.\nDaha Fazlası İçin Lütfen Beklemede Kalın!",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontFamily: "Outfit",
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          "Puanınız: $toplamPuan",
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 23,
+                                              fontFamily: "Outfit",
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(
+                                          height: 100,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ),
-                                const Expanded(
-                                  child: SizedBox(
-                                    height: 40,
+                                )
+                          : Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset("assets/logo.png"),
+                                  const SizedBox(
+                                    height: 20,
                                   ),
+                                  const Text(
+                                    "Kelimeler Getirilemedi!",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontFamily: "Outfit",
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 100,
+                                  ),
+                                ],
+                              ),
+                            )
+                      : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset("assets/logo.png"),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                "Kelimeler Getiriliyor",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontFamily: "Outfit",
                                 ),
-                              ],
-                            )
-                          : Container(
-                              child: Text("Veri Gelemedi Senin Aq"),
-                            )
-                      : Container(
-                          child: Text("Veri Geliyo Bekle Aq"),
+                              ),
+                              const SizedBox(
+                                height: 100,
+                              ),
+                            ],
+                          ),
                         )
                 ],
               ),
