@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:kelime_oyunu/pages/forget_password_page.dart';
 import 'package:kelime_oyunu/pages/home_page.dart';
 import 'package:kelime_oyunu/pages/login_page.dart';
+import 'package:kelime_oyunu/pages/profile_page.dart';
 import 'package:kelime_oyunu/pages/register_page.dart';
+import 'package:kelime_oyunu/pages/reset_password_page.dart';
 import 'package:kelime_oyunu/pages/single_game_page.dart';
 
 class RouteGenerator {
@@ -30,6 +33,12 @@ class RouteGenerator {
         return _gidilecekrota(const RegisterPage(), settings);
       case '/singlegame':
         return _gidilecekrota(const SingleGamePage(), settings);
+      case '/forgetpassword':
+        return _gidilecekrota(const ForgetPasswordPage(), settings);
+      case '/profilepage':
+        return _gidilecekrota(const ProfilPage(), settings);
+      case '/resetpassword':
+        return _gidilecekrota(const ResetPasswordPage(), settings);
       default:
         return _gidilecekrota(const HomePage(), settings);
     }

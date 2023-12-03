@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:kelime_oyunu/viewmodels/single_game_model.dart';
 import 'package:provider/provider.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+class ForgetPasswordPage extends StatefulWidget {
+  const ForgetPasswordPage({Key? key}) : super(key: key);
 
   @override
-  State<RegisterPage> createState() => _LoginPageState();
+  State<ForgetPasswordPage> createState() => _ForgetPasswordPageState();
 }
 
-class _LoginPageState extends State<RegisterPage> {
+class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   final _emailController = TextEditingController();
-  final _sifreController = TextEditingController();
-  final _userNameController = TextEditingController();
-  bool _gizli = true;
   @override
   Widget build(BuildContext context) {
     SingleViewModel _singleModel =
@@ -52,10 +49,13 @@ class _LoginPageState extends State<RegisterPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(
-                      height: 40,
+                    SizedBox(
+                      height: size.width / 2 - 100,
                     ),
                     Image.asset("assets/logo.png"),
+                    const SizedBox(
+                      height: 50,
+                    ),
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: BoxDecoration(
@@ -67,7 +67,7 @@ class _LoginPageState extends State<RegisterPage> {
                             height: 20,
                           ),
                           const Text(
-                            "Kayıt Ol",
+                            "Şifremi Unuttum",
                             style: TextStyle(
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
@@ -76,50 +76,6 @@ class _LoginPageState extends State<RegisterPage> {
                           ),
                           const SizedBox(
                             height: 40,
-                          ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            alignment: Alignment.center,
-                            height: 70,
-                            decoration: BoxDecoration(
-                              //color: Colors.pink,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: TextFormField(
-                              style: const TextStyle(
-                                fontFamily: "Outfit",
-                              ),
-                              //  controller: _titleController,
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              cursorColor: Colors.black,
-                              maxLines: 1,
-                              decoration: const InputDecoration(
-                                labelText: "Kullanıcı Adı",
-                                labelStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: "Outfit",
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.black)),
-                                border: OutlineInputBorder(),
-                                suffixIcon: Icon(Icons.person),
-                              ),
-                              validator: (deger) {
-                                if (deger!.isEmpty) {
-                                  _userNameController.text = "";
-                                  return "Kullanıcı Adı Kısmı Boş Bırakılamaz!";
-                                } else {
-                                  _userNameController.text = deger;
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
                           ),
                           Container(
                             margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -167,63 +123,6 @@ class _LoginPageState extends State<RegisterPage> {
                             ),
                           ),
                           const SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            alignment: Alignment.center,
-                            height: 70,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: TextFormField(
-                              style: const TextStyle(
-                                fontFamily: "Outfit",
-                              ),
-                              //  controller: _titleController,
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              cursorColor: Colors.black,
-                              maxLines: 1,
-                              obscureText: _gizli,
-                              decoration: InputDecoration(
-                                labelText: "Şifre",
-                                labelStyle: const TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: "Outfit",
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.black)),
-                                border: const OutlineInputBorder(),
-                                suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _gizli = !_gizli;
-                                      });
-                                    },
-                                    icon: _gizli
-                                        ? const Icon(Icons.visibility,
-                                            color: Colors.black)
-                                        : const Icon(Icons.visibility_off,
-                                            color: Colors.black)),
-                              ),
-                              validator: (deger) {
-                                if (deger!.length < 4) {
-                                  _sifreController.text = "";
-                                  return "Şifreniz en az 4 karakter uzunluğunda olmalıdır!";
-                                } else if (deger.length > 20) {
-                                  _sifreController.text = "";
-                                  return "Şifreniz en çok 20 karakter uzunluğunda olmalıdır!";
-                                } else {
-                                  _sifreController.text = deger;
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                          const SizedBox(
                             height: 25,
                           ),
                           MaterialButton(
@@ -238,7 +137,7 @@ class _LoginPageState extends State<RegisterPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: const Text(
-                                "Kayıt Ol",
+                                "Bağlantı Gönder",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,
@@ -248,17 +147,17 @@ class _LoginPageState extends State<RegisterPage> {
                             ),
                           ),
                           const SizedBox(
-                            height: 10,
+                            height: 15,
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushReplacementNamed(context, "/login");
+                              Navigator.pop(context);
                             },
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "Zaten Hesabın Var mı?",
+                                  "Şifreni Hatırlıyor musun?",
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontFamily: "Outfit",

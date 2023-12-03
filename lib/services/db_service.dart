@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:kelime_oyunu/models/word.dart';
 
 class DbServices {
-  String yol = "http://10.61.24.153:3000";
+  String yol = "http://192.168.137.1:3000";
   List<Word> _words = [];
   singleKelimeGetir() async {
     try {
