@@ -5,12 +5,12 @@ import 'package:kelime_oyunu/locators.dart';
 import 'package:kelime_oyunu/models/user.dart';
 import 'package:kelime_oyunu/repository/repository.dart';
 
-enum ViewState { geliyor, geldi, hata }
+enum ViewStates { geliyor, geldi, hata }
 
 class UserViewModel with ChangeNotifier {
   final Repository _repository = locator<Repository>();
-  ViewState _state = ViewState.geliyor;
-  ViewState get state => _state;
+  ViewStates _state = ViewStates.geliyor;
+  ViewStates get state => _state;
   User user = User(
       sonsoru: 0,
       onlinepuan: 0,
@@ -24,7 +24,7 @@ class UserViewModel with ChangeNotifier {
       v: 0);
   int sayac = 0;
   String beniHatirla = "a";
-  set state(ViewState value) {
+  set state(ViewStates value) {
     _state = value;
     notifyListeners();
   }
@@ -55,15 +55,19 @@ class UserViewModel with ChangeNotifier {
 
   Future<String> beniHatirlaKontrol() async {
     if (sayac == 0) {
+      await Future.delayed(const Duration(seconds: 3));
+
       beniHatirla = await _repository.beniHatirlaKontrol();
 
       if (beniHatirla != "0") {
         var sonuc = await userGetir(beniHatirla);
         user = sonuc["user"];
-        sayac++;
       }
+      sayac++;
+      state = ViewStates.geldi;
       notifyListeners();
     }
+
     return beniHatirla;
   }
 
@@ -77,18 +81,18 @@ class UserViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  cikisYap() async{
-    user=User(
-      sonsoru: 0,
-      onlinepuan: 0,
-      puan: 0,
-      avatar: "",
-      emailAktif: false,
-      id: "",
-      email: "",
-      kullaniciadi: "",
-      sifre: "",
-      v: 0);
-      await _repository.cikisYap();
+  cikisYap() async {
+    user = User(
+        sonsoru: 0,
+        onlinepuan: 0,
+        puan: 0,
+        avatar: "",
+        emailAktif: false,
+        id: "",
+        email: "",
+        kullaniciadi: "",
+        sifre: "",
+        v: 0);
+    await _repository.cikisYap();
   }
 }
