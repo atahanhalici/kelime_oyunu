@@ -5,7 +5,8 @@ import 'package:kelime_oyunu/models/user.dart';
 import 'package:kelime_oyunu/models/word.dart';
 
 class DbServices {
-  String yol = "http://192.168.137.1:3000"; //"https://word-wars.onrender.com";
+  String yol = /*"http://192.168.137.1:3000";*/
+      "https://word-wars.onrender.com";
   List<Word> _words = [];
   singleKelimeGetir() async {
     try {
@@ -122,5 +123,24 @@ class DbServices {
             v: 0),
       };
     }
+  }
+
+  userGetir(String id) async {
+    Map veri = {"id": id};
+    var response = await http.post(Uri.parse("$yol/kullanici"),
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode(veri));
+    var jsonResponse = json.decode(response.body);
+    User user = User.fromJson(jsonResponse["user"]);
+
+    Map sonuc = {
+      "code": jsonResponse["code"],
+      "response": jsonResponse["response"],
+      "user": user
+    };
+    return sonuc;
   }
 }

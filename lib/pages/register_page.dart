@@ -250,8 +250,7 @@ class _LoginPageState extends State<RegisterPage> {
 
                                 box.get("puan") == null
                                     ? veriler.addAll({"puan": 0})
-                                    : veriler
-                                        .addAll({"puan": box.get("sonsoru")});
+                                    : veriler.addAll({"puan": box.get("puan")});
 
                                 var sonuc =
                                     await _userModel.userRegister(veriler);
@@ -262,6 +261,8 @@ class _LoginPageState extends State<RegisterPage> {
                                   Navigator.pushNamed(context, "/login");
                                   alertDialog(
                                       "İşlem Başarılı", sonuc["response"]);
+
+                                  box.clear();
                                 } else {
                                   alertDialog("Hata", sonuc["response"]);
                                 }

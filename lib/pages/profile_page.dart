@@ -316,6 +316,35 @@ class _ProfilPageState extends State<ProfilPage> {
                           ),
                         ),
                         const SizedBox(
+                          height: 10,
+                        ),
+                        MaterialButton(
+                          onPressed: () async {
+                            await _userModel.cikisYap();
+                            Navigator.popUntil(
+                                context, (route) => route.isFirst);
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, "/homepage", (route) => false);
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            alignment: Alignment.center,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.pink,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Text(
+                              "Çıkış Yap",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontFamily: "Outfit",
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
                           height: 20,
                         ),
                         Image.asset(

@@ -35,6 +35,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserViewModel _userModel =
+        Provider.of<UserViewModel>(context, listen: true);
+    _userModel.beniHatirlaKontrol();
     return MaterialApp(
       onGenerateRoute: RouteGenerator.rotaOlustur,
       debugShowCheckedModeBanner: false,
@@ -43,7 +46,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      home: const HomePage(),
     );
   }
 }

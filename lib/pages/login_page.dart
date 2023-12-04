@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kelime_oyunu/viewmodels/user_model.dart';
 import 'package:provider/provider.dart';
 
@@ -252,6 +253,13 @@ class _LoginPageState extends State<LoginPage> {
 
                                 var sonuc = await _userModel.userLogin(veriler);
                                 if (sonuc["code"] == 200) {
+                                  if (isChecked) {
+                                    var box = await Hive.openBox("user");
+                                    box.clear();
+                                    box.put("id", sonuc["user"].id);
+                                    _userModel
+                                        .beniHatirlaDegis(sonuc["user"].id);
+                                  }
                                   //splashscreen gelince isfirst değişecek
                                   Navigator.popUntil(
                                       context, (route) => route.isFirst);

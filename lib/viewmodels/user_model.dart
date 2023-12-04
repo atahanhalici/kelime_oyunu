@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kelime_oyunu/locators.dart';
 import 'package:kelime_oyunu/models/user.dart';
-import 'package:kelime_oyunu/models/word.dart';
 import 'package:kelime_oyunu/repository/repository.dart';
 
 enum ViewState { geliyor, geldi, hata }
@@ -24,7 +22,8 @@ class UserViewModel with ChangeNotifier {
       kullaniciadi: "",
       sifre: "",
       v: 0);
-
+  int sayac = 0;
+  String beniHatirla = "a";
   set state(ViewState value) {
     _state = value;
     notifyListeners();
@@ -45,5 +44,51 @@ class UserViewModel with ChangeNotifier {
     user = sonuc["user"];
     print(user);
     return sonuc;
+  }
+
+  misafirGiris() async {
+    var sonuc = await _repository.misafirGiris();
+    user.puan = sonuc["puan"];
+    user.sonsoru = sonuc["sonsoru"];
+    user.id = "0";
+  }
+
+  Future<String> beniHatirlaKontrol() async {
+    if (sayac == 0) {
+      beniHatirla = await _repository.beniHatirlaKontrol();
+
+      if (beniHatirla != "0") {
+        var sonuc = await userGetir(beniHatirla);
+        user = sonuc["user"];
+        sayac++;
+      }
+      notifyListeners();
+    }
+    return beniHatirla;
+  }
+
+  userGetir(String id) async {
+    var sonuc = await _repository.userGetir(id);
+    return sonuc;
+  }
+
+  void beniHatirlaDegis(id) {
+    beniHatirla = id;
+    notifyListeners();
+  }
+
+  cikisYap() async{
+    user=User(
+      sonsoru: 0,
+      onlinepuan: 0,
+      puan: 0,
+      avatar: "",
+      emailAktif: false,
+      id: "",
+      email: "",
+      kullaniciadi: "",
+      sifre: "",
+      v: 0);
+      await _repository.cikisYap();
   }
 }

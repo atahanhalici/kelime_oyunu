@@ -6,12 +6,12 @@ String bookToJson(List<User> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class User {
-  final int sonsoru;
+  int sonsoru;
   final int onlinepuan;
-  final int puan;
+  int puan;
   final String avatar;
   final bool emailAktif;
-  final String id;
+  String id;
   final String email;
   final String kullaniciadi;
   final String sifre;
