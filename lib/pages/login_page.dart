@@ -1,5 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:kelime_oyunu/viewmodels/single_game_model.dart';
+import 'package:kelime_oyunu/viewmodels/user_model.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -13,10 +14,11 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _sifreController = TextEditingController();
   bool _gizli = true;
+  bool isChecked = false;
   @override
   Widget build(BuildContext context) {
-    SingleViewModel _singleModel =
-        Provider.of<SingleViewModel>(context, listen: true);
+    UserViewModel _userModel =
+        Provider.of<UserViewModel>(context, listen: true);
     Size size = MediaQuery.of(context).size;
     FocusScopeNode currentFocus = FocusScopeNode();
     return Listener(
@@ -182,10 +184,87 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           const SizedBox(
+                            height: 10,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10, right: 22),
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                  checkColor: Colors.white,
+                                  activeColor: Colors.purple,
+                                  value: isChecked,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      isChecked = value!;
+                                    });
+                                  },
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      isChecked = !isChecked;
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: const Text(
+                                      'Beni Hatırla',
+                                      style: TextStyle(
+                                        fontFamily: "Outfit",
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const Expanded(child: SizedBox()),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, "/forgetpassword");
+                                  },
+                                  child: const Text(
+                                    "Şifremi Unuttum!",
+                                    style: TextStyle(
+                                      color: Colors.purple,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Outfit",
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
                             height: 25,
                           ),
                           MaterialButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              if (_emailController.text != "" &&
+                                  _sifreController.text != "") {
+                                Map veriler = {
+                                  "email": _emailController.text,
+                                  "sifre": _sifreController.text
+                                };
+
+                                var sonuc = await _userModel.userLogin(veriler);
+                                if (sonuc["code"] == 200) {
+                                  //splashscreen gelince isfirst değişecek
+                                  Navigator.popUntil(
+                                      context, (route) => route.isFirst);
+                                  Navigator.pushNamedAndRemoveUntil(
+                                      context, "/homepage", (route) => false);
+                                } else {
+                                  alertDialog("Hata", sonuc["response"]);
+                                }
+                              } else {
+                                kShowSnackBar(
+                                    context, "Tüm Değerler Dolu Görünmüyor");
+                              }
+                            },
                             child: Container(
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 10),
@@ -207,20 +286,6 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           const SizedBox(
                             height: 15,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, "/forgetpassword");
-                            },
-                            child: Text(
-                              "Şifremi Unuttum!",
-                              style: TextStyle(
-                                color: Colors.purple,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: "Outfit",
-                              ),
-                            ),
                           ),
                           const SizedBox(
                             height: 15,
@@ -261,6 +326,9 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     ),
+                    const SizedBox(
+                      height: 30,
+                    ),
                   ],
                 ),
               ),
@@ -268,6 +336,58 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+    );
+  }
+
+  void kShowSnackBar(BuildContext context, String message) {
+    if (kDebugMode) print(message);
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  alertDialog(String baslik, String icerik) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            baslik,
+            style: const TextStyle(
+              fontFamily: "Outfit",
+              color: Colors.black,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  icerik,
+                  style: const TextStyle(
+                    fontFamily: "Outfit",
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Tamam",
+                style: TextStyle(
+                  fontFamily: "Outfit",
+                  color: Colors.black,
+                ),
+              ),
+              onPressed: () async {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

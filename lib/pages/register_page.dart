@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:kelime_oyunu/viewmodels/single_game_model.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:kelime_oyunu/viewmodels/user_model.dart';
 import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -16,8 +18,8 @@ class _LoginPageState extends State<RegisterPage> {
   bool _gizli = true;
   @override
   Widget build(BuildContext context) {
-    SingleViewModel _singleModel =
-        Provider.of<SingleViewModel>(context, listen: true);
+    UserViewModel _userModel =
+        Provider.of<UserViewModel>(context, listen: true);
     Size size = MediaQuery.of(context).size;
     FocusScopeNode currentFocus = FocusScopeNode();
     return Listener(
@@ -108,9 +110,12 @@ class _LoginPageState extends State<RegisterPage> {
                                 suffixIcon: Icon(Icons.person),
                               ),
                               validator: (deger) {
-                                if (deger!.isEmpty) {
+                                if (deger!.length < 2) {
                                   _userNameController.text = "";
-                                  return "Kullanıcı Adı Kısmı Boş Bırakılamaz!";
+                                  return "Kullanıcı adınız en az 2 karakter uzunluğunda olmalıdır!";
+                                } else if (deger.length > 30) {
+                                  _userNameController.text = "";
+                                  return "Kullanıcı adınız en çok 20 karakter uzunluğunda olmalıdır!";
                                 } else {
                                   _userNameController.text = deger;
                                 }
@@ -227,7 +232,44 @@ class _LoginPageState extends State<RegisterPage> {
                             height: 25,
                           ),
                           MaterialButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              if (_emailController.text != "" &&
+                                  _sifreController.text != "" &&
+                                  _userNameController.text != "") {
+                                var box = await Hive.openBox("user");
+
+                                Map veriler = {
+                                  "kullaniciadi": _userNameController.text,
+                                  "email": _emailController.text,
+                                  "sifre": _sifreController.text
+                                };
+                                box.get("sonsoru") == null
+                                    ? veriler.addAll({"sonsoru": 0})
+                                    : veriler.addAll(
+                                        {"sonsoru": box.get("sonsoru")});
+
+                                box.get("puan") == null
+                                    ? veriler.addAll({"puan": 0})
+                                    : veriler
+                                        .addAll({"puan": box.get("sonsoru")});
+
+                                var sonuc =
+                                    await _userModel.userRegister(veriler);
+                                if (sonuc["code"] == 200) {
+                                  //splashscreen gelince isfirst değişecek
+                                  Navigator.popUntil(
+                                      context, (route) => route.isFirst);
+                                  Navigator.pushNamed(context, "/login");
+                                  alertDialog(
+                                      "İşlem Başarılı", sonuc["response"]);
+                                } else {
+                                  alertDialog("Hata", sonuc["response"]);
+                                }
+                              } else {
+                                kShowSnackBar(
+                                    context, "Tüm Değerler Dolu Görünmüyor");
+                              }
+                            },
                             child: Container(
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 10),
@@ -292,6 +334,58 @@ class _LoginPageState extends State<RegisterPage> {
           ),
         ),
       ),
+    );
+  }
+
+  void kShowSnackBar(BuildContext context, String message) {
+    if (kDebugMode) print(message);
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  alertDialog(String baslik, String icerik) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            baslik,
+            style: const TextStyle(
+              fontFamily: "Outfit",
+              color: Colors.black,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  icerik,
+                  style: const TextStyle(
+                    fontFamily: "Outfit",
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Tamam",
+                style: TextStyle(
+                  fontFamily: "Outfit",
+                  color: Colors.black,
+                ),
+              ),
+              onPressed: () async {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

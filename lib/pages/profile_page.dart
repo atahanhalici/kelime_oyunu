@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kelime_oyunu/viewmodels/single_game_model.dart';
+import 'package:kelime_oyunu/viewmodels/user_model.dart';
 import 'package:provider/provider.dart';
 
 class ProfilPage extends StatefulWidget {
@@ -18,10 +21,16 @@ class _ProfilPageState extends State<ProfilPage> {
   final ImagePicker _picker = ImagePicker();
   File? _profilphoto;
   @override
-  Widget build(BuildContext context) {
-    SingleViewModel _singleModel =
-        Provider.of<SingleViewModel>(context, listen: true);
+  void initState() {
+    _userNameController.text =
+        Provider.of<UserViewModel>(context, listen: false).user.kullaniciadi;
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    UserViewModel _userModel =
+        Provider.of<UserViewModel>(context, listen: true);
     Size size = MediaQuery.of(context).size;
     FocusScopeNode currentFocus = FocusScopeNode();
     return Listener(
@@ -90,8 +99,12 @@ class _ProfilPageState extends State<ProfilPage> {
                         CircleAvatar(
                           radius: 50,
                           backgroundImage: _profilphoto == null
-                              ? const AssetImage("assets/pp.jpg")
-                              : FileImage(_profilphoto!) as ImageProvider,
+                              ? _userModel.user.avatar == "default.jpg"
+                                  ? const AssetImage("assets/default.jpg")
+                                  : MemoryImage(
+                                          base64Decode(_userModel.user.avatar))
+                                      as ImageProvider
+                              : FileImage(_profilphoto!),
                         ),
                         Positioned(
                           right: 0,
@@ -148,12 +161,12 @@ class _ProfilPageState extends State<ProfilPage> {
                             style: const TextStyle(
                               fontFamily: "Outfit",
                             ),
-                            //  controller: _titleController,
+                            controller: _userNameController,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             cursorColor: Colors.black,
                             maxLines: 1,
-                            initialValue: "username",
+                            //initialValue: _userModel.user.kullaniciadi,
                             decoration: const InputDecoration(
                               labelText: "Kullanıcı Adı",
                               labelStyle: TextStyle(
@@ -197,7 +210,7 @@ class _ProfilPageState extends State<ProfilPage> {
                                 AutovalidateMode.onUserInteraction,
                             cursorColor: Colors.black,
                             readOnly: true,
-                            initialValue: "wordwarsgame@gmail.com",
+                            initialValue: _userModel.user.email,
                             maxLines: 1,
                             decoration: const InputDecoration(
                               labelText: "E-Mail",
@@ -229,7 +242,36 @@ class _ProfilPageState extends State<ProfilPage> {
                           height: 10,
                         ),
                         MaterialButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            String? base64 = "";
+                            if (_profilphoto != null) {
+                              base64 = await _getImageBase64(_profilphoto!);
+                            }
+                            print(_userNameController);
+                            if (_userNameController.text != "" ||
+                                _userNameController.text ==
+                                    _userModel.user.kullaniciadi) {
+                              Map veriler = {
+                                "kullaniciadi": _userNameController.text,
+                                "avatar": base64 ?? "",
+                                "id": _userModel.user.id
+                              };
+                              var sonuc = await _userModel.guncelle(veriler);
+                              if (sonuc["code"] == 200) {
+                                Navigator.popUntil(
+                                    context, (route) => route.isFirst);
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, "/homepage", (route) => false);
+                                alertDialog("Başarılı", sonuc["response"]);
+                              } else {
+                                alertDialog("Hata", sonuc["response"]);
+                              }
+                            } else {
+                              // ignore: use_build_context_synchronously
+                              kShowSnackBar(
+                                  context, "Tüm Değerler Dolu Görünmüyor");
+                            }
+                          },
                           child: Container(
                             margin: const EdgeInsets.symmetric(horizontal: 10),
                             alignment: Alignment.center,
@@ -298,7 +340,9 @@ class _ProfilPageState extends State<ProfilPage> {
   void _kameradanFotoCek() async {
     File? photofile;
     final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-    if (photo != null) photofile = File(photo.path);
+    if (photo != null) {
+      photofile = File(photo.path);
+    }
     Navigator.of(context).pop();
     setState(() {
       if (photofile != null) _profilphoto = photofile;
@@ -308,10 +352,70 @@ class _ProfilPageState extends State<ProfilPage> {
   void _galeridenFotoSec() async {
     File? imagefile;
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) imagefile = File(image.path);
+    if (image != null) {
+      imagefile = File(image.path);
+    }
     Navigator.of(context).pop();
     setState(() {
       if (imagefile != null) _profilphoto = imagefile;
     });
+  }
+
+  Future<String?> _getImageBase64(File image) async {
+    List<int> imageBytes = await image.readAsBytes();
+    String base64Image = base64Encode(imageBytes);
+    return base64Image;
+  }
+
+  void kShowSnackBar(BuildContext context, String message) {
+    if (kDebugMode) print(message);
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  alertDialog(String baslik, String icerik) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            baslik,
+            style: const TextStyle(
+              fontFamily: "Outfit",
+              color: Colors.black,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  icerik,
+                  style: const TextStyle(
+                    fontFamily: "Outfit",
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Tamam",
+                style: TextStyle(
+                  fontFamily: "Outfit",
+                  color: Colors.black,
+                ),
+              ),
+              onPressed: () async {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

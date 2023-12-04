@@ -191,7 +191,7 @@ class _ProfilPageState extends State<ResetPasswordPage> {
 
                             maxLines: 1,
                             decoration: const InputDecoration(
-                              labelText: "Yeni Şifre",
+                              labelText: "Yeni Şifre (Tekrar)",
                               labelStyle: TextStyle(
                                 color: Colors.black,
                                 fontFamily: "Outfit",
