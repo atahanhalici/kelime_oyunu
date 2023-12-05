@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kelime_oyunu/viewmodels/single_game_model.dart';
+import 'package:kelime_oyunu/viewmodels/user_model.dart';
 import 'package:provider/provider.dart';
 
 class SingleGamePage extends StatefulWidget {
@@ -25,24 +26,13 @@ class _SingleGamePageState extends State<SingleGamePage> {
   Widget build(BuildContext context) {
     SingleViewModel _singleModel =
         Provider.of<SingleViewModel>(context, listen: true);
+    UserViewModel _userModel =
+        Provider.of<UserViewModel>(context, listen: true);
 
     FocusNode focusNode = FocusNode();
-    //String kelime = "word wars";
-    /* Map ipucu = {
-      0: "w",
-      1: "o",
-      2: "r",
-      3: "d",
-      4: " ",
-      5: "w",
-      6: "a",
-      7: "r",
-      8: "s"
-    };*/
 
-    int toplamPuan = 1500,
-        sPuan =
-            ((_singleModel.ipucu.length - _singleModel.aciklar.length)) * 100;
+    /* int sPuan =
+        ((_singleModel.ipucu.length - _singleModel.aciklar.length)) * 100;*/
     Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
@@ -71,7 +61,8 @@ class _SingleGamePageState extends State<SingleGamePage> {
                       ],
                     )),
                   ),
-                  _singleModel.state == ViewState.geldi
+                  _singleModel.state == ViewState.geldi &&
+                          _userModel.state == ViewStates.geldi
                       ? _singleModel.kelimeler[0].id != ""
                           ? _singleModel.bitti == false
                               ? Column(
@@ -83,7 +74,7 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                           width: 20,
                                         ),
                                         Text(
-                                          "Toplam Puan\n$toplamPuan",
+                                          "Toplam Puan\n${_userModel.user.puan}",
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                             color: Colors.white,
@@ -108,7 +99,7 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                         ),
                                         const Expanded(child: SizedBox()),
                                         Text(
-                                          "Soru Puanı\n$sPuan",
+                                          "Soru Puanı\n${_singleModel.sPuan}",
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                             color: Colors.white,
@@ -128,7 +119,7 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                         controller: _controller,
                                         autofocus: true,
                                         focusNode: focusNode,
-                                        onChanged: (value) {
+                                        onChanged: (value) async {
                                           if (_singleModel.tahmin.length +
                                                   _singleModel.aciklar.length !=
                                               _singleModel.ipucu.length) {
@@ -256,7 +247,16 @@ class _SingleGamePageState extends State<SingleGamePage> {
 
                                           if (_singleModel.tahmin.length ==
                                               _singleModel.ipucu.length) {
-                                            _singleModel.kontrol();
+                                            await _singleModel.kontrol(
+                                                _userModel.user.sonsoru);
+                                            if (_singleModel.puanEkle) {
+                                              await _userModel.puanEkle(
+                                                  _userModel.user.id,
+                                                  _singleModel.sPuan);
+                                              _singleModel
+                                                  .siradakiKelimeyiParcala(
+                                                      _userModel.user.sonsoru);
+                                            }
                                           }
                                         },
                                       ),
@@ -468,9 +468,9 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                       height: 20,
                                     ),
                                     TextButton(
-                                        onPressed: () {
-                                          print(_singleModel.kontrolSurec);
+                                        onPressed: () async {
                                           if (!_singleModel.kontrolSurec) {
+                                            _singleModel.harfAl();
                                             int sayi = _singleModel.randomSayi(
                                                 _singleModel.ipucu,
                                                 _singleModel.aciklar);
@@ -490,7 +490,19 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                                         .toList()[
                                                     _singleModel.aciklar[i]];
                                               }
-                                              _singleModel.kontrol();
+
+                                              await _singleModel.kontrol(
+                                                  _userModel.user.sonsoru);
+
+                                              if (_singleModel.puanEkle) {
+                                                await _userModel.puanEkle(
+                                                    _userModel.user.id,
+                                                    _singleModel.sPuan);
+                                                _singleModel
+                                                    .siradakiKelimeyiParcala(
+                                                        _userModel
+                                                            .user.sonsoru);
+                                              }
                                             }
                                           }
                                         },
@@ -570,7 +582,7 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                           height: 10,
                                         ),
                                         Text(
-                                          "Puanınız: $toplamPuan",
+                                          "Puanınız: ${_userModel.user.puan}",
                                           style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 23,
@@ -617,7 +629,7 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                 height: 20,
                               ),
                               const Text(
-                                "Kelimeler Getiriliyor",
+                                "Sıradaki Kelime Getiriliyor!",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,

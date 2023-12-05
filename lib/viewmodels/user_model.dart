@@ -35,14 +35,19 @@ class UserViewModel with ChangeNotifier {
 
   Future<Map> userLogin(Map veriler) async {
     var sonuc = await _repository.userLogin(veriler);
-    user = sonuc["user"];
+    if (sonuc["code"] == 200) {
+      user = sonuc["user"];
+    }
+
     return sonuc;
   }
 
   guncelle(Map veriler) async {
     var sonuc = await _repository.userGuncelle(veriler);
-    user = sonuc["user"];
-    print(user);
+    if (sonuc["code"] == 200) {
+      user = sonuc["user"];
+    }
+
     return sonuc;
   }
 
@@ -58,7 +63,6 @@ class UserViewModel with ChangeNotifier {
       await Future.delayed(const Duration(seconds: 3));
 
       beniHatirla = await _repository.beniHatirlaKontrol();
-
       if (beniHatirla != "0") {
         var sonuc = await userGetir(beniHatirla);
         user = sonuc["user"];
@@ -94,5 +98,24 @@ class UserViewModel with ChangeNotifier {
         sifre: "",
         v: 0);
     await _repository.cikisYap();
+  }
+
+  sifreYenile(String eski, String yeni) async {
+    var sonuc = await _repository.sifreYenile(eski, yeni, user.id);
+    if (sonuc["code"] == 200) {
+      user = sonuc["user"];
+    }
+
+    return sonuc;
+  }
+
+  puanEkle(String id, int puan) async {
+    state = ViewStates.geliyor;
+    print(puan);
+    var sonuc = await _repository.puanEkle(id, puan);
+    if (sonuc["code"] == 200) {
+      user = sonuc["user"];
+    }
+    state = ViewStates.geldi;
   }
 }

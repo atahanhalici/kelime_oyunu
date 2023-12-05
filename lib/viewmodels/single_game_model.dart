@@ -15,7 +15,6 @@ class SingleViewModel with ChangeNotifier {
   List aciklar = [];
   Map<int, String> tahmin = {};
   List<Word> kelimeler = [];
-  int sira = 0;
   String soru = "";
   bool kontrolSurec = false;
   Map<int, String> ipucu = {
@@ -31,6 +30,8 @@ class SingleViewModel with ChangeNotifier {
   };
   bool bitti = false;
   Color renk = Colors.black;
+  bool puanEkle = false;
+  int sPuan = 0;
   set state(ViewState value) {
     _state = value;
     notifyListeners();
@@ -48,7 +49,8 @@ class SingleViewModel with ChangeNotifier {
     return randomNumber;
   }
 
-  kontrol() async {
+  kontrol(int sonsoru) async {
+    puanEkle = false;
     kontrolSurec = true;
     notifyListeners();
     bool areEqual = true;
@@ -75,14 +77,15 @@ class SingleViewModel with ChangeNotifier {
 
     if (areEqual) {
       renk = Colors.green;
+      puanEkle = true;
       sifirla();
       await Future.delayed(const Duration(seconds: 1));
-      siradakiKelimeyiParcala();
     } else {
       renk = Colors.red;
       sifirla();
     }
     kontrolSurec = false;
+    sPuan = (ipucu.length - aciklar.length) * 100;
     notifyListeners();
   }
 
@@ -99,27 +102,29 @@ class SingleViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  singleKelimeGetir() async {
+  singleKelimeGetir(int sonsoru) async {
     state = ViewState.geliyor;
     kelimeler = await _repository.singleKelimeGetir();
-    siradakiKelimeyiParcala();
+    siradakiKelimeyiParcala(sonsoru);
   }
 
-  siradakiKelimeyiParcala() {
-    if (sira == kelimeler.length) {
+  siradakiKelimeyiParcala(int sonsoru) {
+    print(kelimeler);
+    print("ss" + sonsoru.toString());
+    if (sonsoru >= kelimeler.length) {
       bitti = true;
     } else {
       state = ViewState.geliyor;
       ipucu.clear();
       aciklar.clear();
       tahmin.clear();
-      String kelime = kelimeler[sira].icerik.toLowerCase();
+      String kelime = kelimeler[sonsoru].icerik.toLowerCase();
       List bolum = kelime.split("");
       for (int i = 0; i < bolum.length; i++) {
         ipucu.addAll({i: bolum[i]});
       }
       print(ipucu);
-      soru = kelimeler[sira].sorusu;
+      soru = kelimeler[sonsoru].sorusu;
       print(soru);
 
       for (int i = 0; i < bolum.length; i++) {
@@ -127,14 +132,15 @@ class SingleViewModel with ChangeNotifier {
           aciklar.add(i);
         }
       }
-      print(aciklar);
-      if (sira < kelimeler.length) {
-        print("heyo");
-        sira++;
-      }
+      sPuan = (ipucu.length - aciklar.length) * 100;
     }
 
     state = ViewState.geldi;
+    notifyListeners();
+  }
+
+  void harfAl() {
+    sPuan = sPuan - 100;
     notifyListeners();
   }
 }

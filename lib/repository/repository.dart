@@ -11,31 +11,38 @@ class Repository {
   }
 
   userRegister(Map veriler) async {
-   return await _databaseService.userRegister(veriler);
-   
+    return await _databaseService.userRegister(veriler);
   }
 
-  userLogin(Map veriler) async{
-     return await _databaseService.userLogin(veriler);
+  userLogin(Map veriler) async {
+    return await _databaseService.userLogin(veriler);
   }
 
-  userGuncelle(Map veriler) async{
-return await _databaseService.userGuncelle(veriler);
+  userGuncelle(Map veriler) async {
+    return await _databaseService.userGuncelle(veriler);
   }
 
-  misafirGiris()async {
+  misafirGiris() async {
     return await _localdatabaseService.misafirGiris();
   }
 
-  Future<String> beniHatirlaKontrol() async{
-     return await _localdatabaseService.beniHatirlaKontrol();
+  Future<String> beniHatirlaKontrol() async {
+    return await _localdatabaseService.beniHatirlaKontrol();
   }
 
-  userGetir(String id) async{
+  userGetir(String id) async {
     return await _databaseService.userGetir(id);
   }
 
-  cikisYap() async{
-       await _localdatabaseService.cikisYap();
+  cikisYap() async {
+    await _localdatabaseService.cikisYap();
+  }
+
+  sifreYenile(String eski, String yeni, String id) async {
+    return await _databaseService.sifreYenile(eski, yeni, id);
+  }
+
+  puanEkle(String id, int puan) async{
+    return await _databaseService.puanEkle(id, puan);
   }
 }

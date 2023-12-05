@@ -134,7 +134,7 @@ class HomePage extends StatelessWidget {
                                     ),
                                     MaterialButton(
                                       onPressed: () {
-                                        _singleModel.singleKelimeGetir();
+                                        _singleModel.singleKelimeGetir(_userModel.user.sonsoru);
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(

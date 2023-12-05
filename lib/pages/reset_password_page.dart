@@ -1,7 +1,6 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:kelime_oyunu/viewmodels/single_game_model.dart';
+import 'package:kelime_oyunu/viewmodels/user_model.dart';
 import 'package:provider/provider.dart';
 
 class ResetPasswordPage extends StatefulWidget {
@@ -17,8 +16,8 @@ class _ProfilPageState extends State<ResetPasswordPage> {
   final _newPasswordController2 = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    SingleViewModel _singleModel =
-        Provider.of<SingleViewModel>(context, listen: true);
+    UserViewModel _userModel =
+        Provider.of<UserViewModel>(context, listen: true);
 
     Size size = MediaQuery.of(context).size;
     FocusScopeNode currentFocus = FocusScopeNode();
@@ -164,6 +163,9 @@ class _ProfilPageState extends State<ResetPasswordPage> {
                               } else {
                                 _newPasswordController.text = deger;
                               }
+                              if (deger != _newPasswordController2.text) {
+                                return "Şifreler eşleşmiyor!";
+                              }
                               return null;
                             },
                           ),
@@ -210,6 +212,9 @@ class _ProfilPageState extends State<ResetPasswordPage> {
                               } else {
                                 _newPasswordController2.text = deger;
                               }
+                              if (deger != _newPasswordController.text) {
+                                return "Şifreler eşleşmiyor!";
+                              }
                               return null;
                             },
                           ),
@@ -218,7 +223,26 @@ class _ProfilPageState extends State<ResetPasswordPage> {
                           height: 10,
                         ),
                         MaterialButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            if (_oldPasswordController.text != "" &&
+                                _newPasswordController.text != "" &&
+                                _newPasswordController2.text != "" &&
+                                _newPasswordController.text ==
+                                    _newPasswordController2.text) {
+                              var sonuc = await _userModel.sifreYenile(
+                                  _oldPasswordController.text,
+                                  _newPasswordController.text);
+                              if (sonuc["code"] == 200) {
+                                Navigator.pop(context);
+                                alertDialog("Başarılı", sonuc["response"]);
+                              } else {
+                                alertDialog("Hata", sonuc["response"]);
+                              }
+                            } else {
+                              kShowSnackBar(
+                                  context, "Tüm Değerler Dolu Görünmüyor");
+                            }
+                          },
                           child: Container(
                             margin: const EdgeInsets.symmetric(horizontal: 10),
                             alignment: Alignment.center,
@@ -252,6 +276,58 @@ class _ProfilPageState extends State<ResetPasswordPage> {
           ],
         ),
       ),
+    );
+  }
+
+  void kShowSnackBar(BuildContext context, String message) {
+    if (kDebugMode) print(message);
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  alertDialog(String baslik, String icerik) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            baslik,
+            style: const TextStyle(
+              fontFamily: "Outfit",
+              color: Colors.black,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  icerik,
+                  style: const TextStyle(
+                    fontFamily: "Outfit",
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Tamam",
+                style: TextStyle(
+                  fontFamily: "Outfit",
+                  color: Colors.black,
+                ),
+              ),
+              onPressed: () async {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
