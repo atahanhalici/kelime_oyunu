@@ -87,7 +87,7 @@ flutter:
         - asset: fonts/Outfit-Medium.ttf
         - asset: fonts/Outfit-Bold.ttf
         - asset: fonts/Outfit-Light.ttf
-   
+        
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

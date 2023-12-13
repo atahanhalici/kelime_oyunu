@@ -45,4 +45,12 @@ class Repository {
   puanEkle(String id, int puan) async{
     return await _databaseService.puanEkle(id, puan);
   }
+
+  misafirPuanEkle(int puan) async{
+   return await _localdatabaseService.misafirPuanEkle(puan);
+  }
+
+  sifremiUnuttum(String email) async{
+return await _databaseService.sifremiUnuttum(email);
+  }
 }

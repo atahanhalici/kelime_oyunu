@@ -250,9 +250,16 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                             await _singleModel.kontrol(
                                                 _userModel.user.sonsoru);
                                             if (_singleModel.puanEkle) {
-                                              await _userModel.puanEkle(
-                                                  _userModel.user.id,
-                                                  _singleModel.sPuan);
+                                              if (_userModel.user.id == "0") {
+                                                await _userModel
+                                                    .misafirPuanEkle(
+                                                        _singleModel.sPuan);
+                                              } else {
+                                                await _userModel.puanEkle(
+                                                    _userModel.user.id,
+                                                    _singleModel.sPuan);
+                                              }
+
                                               _singleModel
                                                   .siradakiKelimeyiParcala(
                                                       _userModel.user.sonsoru);
@@ -415,6 +422,9 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                                                       .ipucu[
                                                                           index]
                                                                       .toString()
+                                                                      .replaceAll(
+                                                                          'i',
+                                                                          'İ')
                                                                       .toUpperCase()
                                                                   : _singleModel.tahmin[
                                                                               index] !=
@@ -423,6 +433,9 @@ class _SingleGamePageState extends State<SingleGamePage> {
                                                                           .tahmin[
                                                                               index]
                                                                           .toString()
+                                                                          .replaceAll(
+                                                                              'i',
+                                                                              'İ')
                                                                           .toUpperCase()
                                                                       : " ",
                                                               style: TextStyle(

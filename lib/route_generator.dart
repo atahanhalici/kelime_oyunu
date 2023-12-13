@@ -8,6 +8,7 @@ import 'package:kelime_oyunu/pages/profile_page.dart';
 import 'package:kelime_oyunu/pages/register_page.dart';
 import 'package:kelime_oyunu/pages/reset_password_page.dart';
 import 'package:kelime_oyunu/pages/single_game_page.dart';
+import 'package:kelime_oyunu/pages/top_ten_page.dart';
 
 class RouteGenerator {
   static Route<dynamic>? _gidilecekrota(
@@ -39,6 +40,8 @@ class RouteGenerator {
         return _gidilecekrota(const ProfilPage(), settings);
       case '/resetpassword':
         return _gidilecekrota(const ResetPasswordPage(), settings);
+      case '/toptenpage':
+        return _gidilecekrota(const TopTenPage(), settings);
       default:
         return _gidilecekrota(const HomePage(), settings);
     }

@@ -228,4 +228,32 @@ class DbServices {
       };
     }
   }
+
+  sifremiUnuttum(String email) async {
+    Map veriler = {"email": email};
+    try {
+      var response = await http.post(Uri.parse("$yol/sifremiunuttum"),
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: jsonEncode(veriler));
+      print("as");
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      print("ben");
+      Map sonuc = {
+        "code": jsonResponse["code"],
+        "response": jsonResponse["response"],
+      };
+      print("burda");
+      return sonuc;
+    } catch (e) {
+      return {
+        "code": 404,
+        "response":
+            "Sunucularımıza erişilemiyor, Lütfen internet bağlantınızı kontrol edin",
+      };
+    }
+  }
 }

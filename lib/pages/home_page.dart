@@ -64,10 +64,16 @@ class HomePage extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        const Icon(
-                                          Icons.groups,
-                                          size: 35,
-                                          color: Colors.white,
+                                        GestureDetector(
+                                          onTap: (){
+                                             Navigator.pushNamed(
+                                                  context, "/toptenpage");
+                                          },
+                                          child: const Icon(
+                                            Icons.groups,
+                                            size: 35,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                         const Expanded(child: SizedBox()),
                                         GestureDetector(

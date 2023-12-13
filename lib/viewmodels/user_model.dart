@@ -118,4 +118,20 @@ class UserViewModel with ChangeNotifier {
     }
     state = ViewStates.geldi;
   }
+
+  misafirPuanEkle(int puan) async {
+    state = ViewStates.geliyor;
+    var sonuc = await _repository.misafirPuanEkle(puan);
+
+    user.puan = sonuc["puan"];
+    user.sonsoru = sonuc["sonsoru"];
+
+    state = ViewStates.geldi;
+  }
+
+  sifremiUnuttum(String email) async {
+    var sonuc = await _repository.sifremiUnuttum(email);
+
+    return sonuc;
+  }
 }

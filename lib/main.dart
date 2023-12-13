@@ -1,14 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kelime_oyunu/locators.dart';
-import 'package:kelime_oyunu/pages/reset_password_page.dart';
 import 'package:kelime_oyunu/pages/home_page.dart';
-import 'package:kelime_oyunu/pages/login_page.dart';
-import 'package:kelime_oyunu/pages/profile_page.dart';
-import 'package:kelime_oyunu/pages/register_page.dart';
+import 'package:kelime_oyunu/pages/top_ten_page.dart';
 import 'package:kelime_oyunu/route_generator.dart';
 import 'package:kelime_oyunu/viewmodels/single_game_model.dart';
 import 'package:kelime_oyunu/viewmodels/user_model.dart';

@@ -30,4 +30,15 @@ class LocalDbService {
     var box = await Hive.openBox("user");
     box.clear();
   }
+
+  misafirPuanEkle(int puan) async {
+    var box = await Hive.openBox("user");
+    var puani = box.get("puan");
+    var sonSoru = box.get("sonsoru");
+    puani = puani + puan;
+    sonSoru++;
+    await box.put("puan", puani);
+    await box.put("sonsoru", sonSoru);
+    return {"puan": puani, "sonsoru": sonSoru};
+  }
 }
